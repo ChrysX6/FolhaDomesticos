@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Controle Folha de Pagamento Domésticos - Águia Contab</title>
+<style>
+:root{
+  --bg:#f4f6f9; --card:#ffffff; --text:#1f2937; --muted:#6b7280;
+  --primary:#0d3b66; --primary-light:#145a8a; --border:#d1d5db;
+  --green:#16a34a; --green-bg:#dcfce7; --red:#dc2626; --red-bg:#fee2e2;
+  --select-bg:#dbeafe; --select-border:#2563eb;
+}
+[data-theme="dark"]{
+  --bg:#111827; --card:#1f2937; --text:#f3f4f6; --muted:#9ca3af;
+  --primary:#1e3a5f; --primary-light:#2c5282; --border:#374151;
+  --green:#22c55e; --green-bg:#14532d; --red:#f87171; --red-bg:#7f1d1d;
+  --select-bg:#1e3a8a; --select-border:#3b82f6;
+}
+*{box-sizing:border-box; margin:0; padding:0;}
+body{font-family:'Segoe UI', Arial, sans-serif; background:var(--bg); color:var(--text); transition:background .3s,color .3s;}
+header{background:linear-gradient(135deg,var(--primary),var(--primary-light)); color:#fff; padding:14px 24px; display:flex; align-items:center; justify-content:space-between; box-shadow:0 2px 8px rgba(0,0,0,.15); position:sticky; top:0; z-index:100;}
+header .brand{display:flex; align-items:center; gap:14px;}
+header img{height:46px; border-radius:6px; background:#fff; padding:2px;}
+header h1{font-size:18px; font-weight:600;}
+header .sub{font-size:12px; opacity:.85;}
+#themeToggle{background:rgba(255,255,255,.15); border:none; color:#fff; font-size:20px; width:40px; height:40px; border-radius:50%; cursor:pointer; transition:.2s;}
+#themeToggle:hover{background:rgba(255,255,255,.3);}
+.container{max-width:1500px; margin:20px auto; padding:0 16px;}
+.toolbar{display:flex; flex-wrap:wrap; gap:12px; align-items:center; justify-content:space-between; margin-bottom:16px; background:var(--card); padding:14px; border-radius:10px; box-shadow:0 1px 4px rgba(0,0,0,.08); border:1px solid var(--border);}
+.toolbar .group{display:flex; gap:8px; align-items:center; flex-wrap:wrap;}
+select, input[type=text], input[type=number]{padding:8px 10px; border:1px solid var(--border); border-radius:6px; background:var(--card); color:var(--text); font-size:14px;}
+button{cursor:pointer; border:none; border-radius:6px; padding:9px 16px; font-size:14px; font-weight:500; transition:.15s;}
+.btn-primary{background:var(--primary); color:#fff;}
+.btn-primary:hover{background:var(--primary-light);}
+.btn-secondary{background:#e5e7eb; color:#111827;}
+[data-theme="dark"] .btn-secondary{background:#374151; color:#f3f4f6;}
+.btn-secondary:hover{opacity:.85;}
+.btn-danger{background:var(--red); color:#fff;}
+.btn-success{background:var(--green); color:#fff;}
+.btn-sm{padding:6px 10px; font-size:12px;}
+.stats{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:10px; margin-bottom:16px;}
+.stat-card{background:var(--card); border:1px solid var(--border); border-radius:10px; padding:12px 14px; box-shadow:0 1px 4px rgba(0,0,0,.06);}
+.stat-card .num{font-size:22px; font-weight:700; color:var(--primary);}
+.stat-card .label{font-size:12px; color:var(--muted); margin-top:2px;}
+.table-wrap{background:var(--card); border-radius:10px; box-shadow:0 1px 4px rgba(0,0,0,.08); overflow:auto; border:1px solid var(--border);}
+table{width:100%; border-collapse:collapse; font-size:13px; min-width:1100px;}
+thead th{background:var(--primary); color:#fff; padding:10px 8px; text-align:left; white-space:nowrap; border:1px solid var(--border); position:sticky; top:0;}
+tbody td{padding:8px; border:1px solid var(--border); white-space:nowrap;}
+tbody tr:hover{background:rgba(13,59,102,.06);}
+[data-theme="dark"] tbody tr:hover{background:rgba(59,130,246,.1);}
+tbody tr.selected{background:var(--select-bg) !important; outline:2px solid var(--select-border);}
+.badge{display:inline-block; padding:4px 10px; border-radius:20px; font-size:12px; font-weight:600; cursor:pointer; user-select:none;}
+.badge.sim{background:var(--green-bg); color:var(--green);}
+.badge.nao{background:var(--red-bg); color:var(--red);}
+.num-badge{display:inline-block; padding:4px 10px; border-radius:6px; font-size:13px; font-weight:700; background:var(--select-bg); color:var(--primary);}
+.actions{display:flex; gap:6px;}
+.modal-overlay{display:none; position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:200; align-items:center; justify-content:center;}
+.modal-overlay.active{display:flex;}
+.modal{background:var(--card); border-radius:12px; padding:24px; width:100%; max-width:520px; max-height:90vh; overflow-y:auto; box-shadow:0 10px 40px rgba(0,0,0,.25);}
+.modal h2{margin-bottom:16px; color:var(--primary); font-size:18px;}
+.form-group{margin-bottom:12px;}
+.form-group label{display:block; font-size:13px; margin-bottom:4px; color:var(--muted); font-weight:600;}
+.form-group input, .form-group select{width:100%;}
+.form-row{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+.modal-footer{display:flex; justify-content:flex-end; gap:10px; margin-top:16px;}
+.toast{position:fixed; bottom:20px; right:20px; padding:14px 20px; border-radius:8px; color:#fff; font-size:14px; z-index:300; box-shadow:0 4px 12px rgba(0,0,0,.2); animation:slideIn .3s;}
+.toast.success{background:var(--green);}
+.toast.error{background:var(--red);}
+@keyframes slideIn{from{transform:translateX(100%); opacity:0;} to{transform:translateX(0); opacity:1;}}
+.loading{display:flex; align-items:center; justify-content:center; padding:60px; color:var(--muted); font-size:15px; gap:10px;}
+.spinner{width:20px; height:20px; border:3px solid var(--border); border-top-color:var(--primary); border-radius:50%; animation:spin 0.8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.empty{text-align:center; padding:40px; color:var(--muted);}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <img src="https://chrysx6.github.io/LinksAguiaContab/links/img/logo1.jpg" alt="Águia Contab">
+    <div>
+      <h1>Controle Folha de Pagamento Domésticos</h1>
+      <div class="sub">Águia Contab - Painel de Controle Mensal</div>
+    </div>
+  </div>
+  <button id="themeToggle" title="Alternar tema">🌙</button>
+</header>
+
+<div class="container">
+
+  <div class="toolbar">
+    <div class="group">
+      <label style="font-weight:600; font-size:13px;">Mês:</label>
+      <select id="monthSelect"></select>
+      <button class="btn-secondary btn-sm" id="btnNewMonth">+ Novo Mês</button>
+      <button class="btn-secondary btn-sm" id="btnDuplicate">📋 Duplicar Mês Passado</button>
+    </div>
+    <div class="group">
+      <input type="text" id="searchInput" placeholder="Buscar empregador, CPF ou analista...">
+      <button class="btn-primary" id="btnNew">+ Cadastrar Empregador</button>
+    </div>
+  </div>
+
+  <div class="stats" id="statsBox"></div>
+
+  <div class="table-wrap">
+    <table id="dataTable">
+      <thead><tr id="tableHead"></tr></thead>
+      <tbody id="tableBody">
+        <tr><td colspan="12"><div class="loading"><div class="spinner"></div> Sincronizando com o Google Sheets...</div></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <h2 id="modalTitle">Cadastrar Empregador</h2>
+    <form id="recordForm">
+      <div class="form-row">
+        <div class="form-group"><label>Analista</label><input type="text" name="ANALISTA"></div>
+        <div class="form-group"><label>Tipo</label><input type="text" name="TIPO" placeholder="PF"></div>
+      </div>
+      <div class="form-group"><label>Empregador</label><input type="text" name="EMPREGADOR" required></div>
+      <div class="form-row">
+        <div class="form-group"><label>CPF do Empregador</label><input type="text" name="EMPREGADOR CPF"></div>
+        <div class="form-group"><label>Colaboradores Ativos</label><input type="number" name="COLABORADORES ATIVOS" min="0" value="1"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Código de Acesso</label><input type="text" name="CODIGO DE ACESSO"></div>
+        <div class="form-group"><label>Senha</label><input type="text" name="SENHA"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Adiantamento</label>
+          <select name="ADIANTAMENTO"><option>Não</option><option>Sim</option></select>
+        </div>
+        <div class="form-group"><label>Pagamento</label>
+          <select name="PAGAMENTO"><option>Não</option><option>Sim</option></select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>DAE</label>
+          <select name="DAE"><option>Não</option><option>Sim</option></select>
+        </div>
+        <div class="form-group"><label>E-mail Enviado</label>
+          <select name="E-MAIL ENVIADO"><option>Não</option><option>Sim</option></select>
+        </div>
+      </div>
+      <div class="form-group"><label>Mensageiro</label>
+        <select name="MENSSAGER"><option>Não</option><option>Sim</option></select>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn-secondary" id="btnCancel">Cancelar</button>
+        <button type="submit" class="btn-primary">Salvar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+const API_URL = "COLE_AQUI_A_URL_DO_SEU_APPS_SCRIPT_DE_FOLHA_DOMESTICA/exec";
+
+const BASE_COLS = ["ANALISTA","TIPO","EMPREGADOR","EMPREGADOR CPF","CODIGO DE ACESSO","SENHA"];
+const STATUS_COLS = ["ADIANTAMENTO","PAGAMENTO","DAE","E-MAIL ENVIADO","MENSSAGER"];
+const NUMERIC_COLS = ["COLABORADORES ATIVOS"];
+const ALL_COLS = BASE_COLS.concat(STATUS_COLS).concat(NUMERIC_COLS);
+
+let state = { month: null, months: [], data: [], editingRow: null, selectedRow: null };
+
+const $ = sel => document.querySelector(sel);
+const $$ = sel => document.querySelectorAll(sel);
+
+function toast(msg, type="success"){
+  const t = document.createElement("div");
+  t.className = "toast " + type;
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(()=>t.remove(), 3500);
+}
+
+async function apiGet(action, params={}){
+  const url = new URL(API_URL);
+  url.searchParams.set("action", action);
+  url.searchParams.set("_t", Date.now());
+  Object.keys(params).forEach(k => url.searchParams.set(k, params[k]));
+  for(let attempt=0; attempt<2; attempt++){
+    try{
+      const res = await fetch(url.toString(), { method:"GET", cache:"no-store" });
+      const text = await res.text();
+      return JSON.parse(text);
+    }catch(err){
+      if(attempt===1) throw err;
+      await new Promise(r=>setTimeout(r,600));
+    }
+  }
+}
+
+async function apiPost(body){
+  for(let attempt=0; attempt<2; attempt++){
+    try{
+      const res = await fetch(API_URL, {
+        method:"POST",
+        headers:{"Content-Type":"text/plain;charset=utf-8"},
+        body: JSON.stringify(body),
+        cache:"no-store"
+      });
+      const text = await res.text();
+      return JSON.parse(text);
+    }catch(err){
+      if(attempt===1) throw err;
+      await new Promise(r=>setTimeout(r,600));
+    }
+  }
+}
+
+function renderHead(){
+  const labels = {
+    "ANALISTA":"Analista","TIPO":"Tipo","EMPREGADOR":"Empregador","EMPREGADOR CPF":"CPF Empregador",
+    "CODIGO DE ACESSO":"Código Acesso","SENHA":"Senha","ADIANTAMENTO":"Adiantamento","PAGAMENTO":"Pagamento",
+    "DAE":"DAE","E-MAIL ENVIADO":"E-mail Enviado","MENSSAGER":"Mensageiro","COLABORADORES ATIVOS":"Colaboradores Ativos"
+  };
+  let html = "";
+  ALL_COLS.forEach(c => html += `<th>${labels[c]||c}</th>`);
+  html += "<th>Ações</th>";
+  $("#tableHead").innerHTML = html;
+}
+
+function renderStats(){
+  const total = state.data.length;
+  let html = `<div class="stat-card"><div class="num">${total}</div><div class="label">Empregadores Cadastrados</div></div>`;
+  STATUS_COLS.forEach(col => {
+    const count = state.data.filter(r => r[col]==="Sim").length;
+    const label = {"ADIANTAMENTO":"Adiantamento OK","PAGAMENTO":"Pagamento OK","DAE":"DAE OK","E-MAIL ENVIADO":"E-mail Enviado","MENSSAGER":"Mensageiro OK"}[col]||col;
+    html += `<div class="stat-card"><div class="num">${count}/${total}</div><div class="label">${label}</div></div>`;
+  });
+  $("#statsBox").innerHTML = html;
+}
+
+function renderTable(){
+  const filter = ($("#searchInput").value||"").toLowerCase();
+  const rows = state.data.filter(r =>
+    !filter ||
+    (r.EMPREGADOR||"").toLowerCase().includes(filter) ||
+    (r["EMPREGADOR CPF"]||"").toLowerCase().includes(filter) ||
+    (r.ANALISTA||"").toLowerCase().includes(filter)
+  );
+
+  if(rows.length===0){
+    $("#tableBody").innerHTML = `<tr><td colspan="${ALL_COLS.length+1}"><div class="empty">Nenhum empregador cadastrado neste mês.</div></td></tr>`;
+    return;
+  }
+
+  let html = "";
+  rows.forEach(r => {
+    const selectedClass = state.selectedRow===r._row ? "selected" : "";
+    html += `<tr class="${selectedClass}" data-row="${r._row}">`;
+    BASE_COLS.forEach(col => html += `<td>${r[col]||""}</td>`);
+    STATUS_COLS.forEach(col => {
+      const val = r[col]||"Não";
+      const cls = val==="Sim" ? "sim":"nao";
+      html += `<td><span class="badge ${cls}" data-toggle="${col}" data-row="${r._row}">${val}</span></td>`;
+    });
+    NUMERIC_COLS.forEach(col => html += `<td><span class="num-badge">${r[col]||0}</span></td>`);
+    html += `<td class="actions">
+      <button class="btn-secondary btn-sm" data-edit="${r._row}">✏️</button>
+      <button class="btn-danger btn-sm" data-del="${r._row}">🗑️</button>
+    </td></tr>`;
+  });
+  $("#tableBody").innerHTML = html;
+
+  $$("[data-toggle]").forEach(el => el.addEventListener("click", async (e)=>{
+    e.stopPropagation();
+    const row = parseInt(el.dataset.row);
+    const col = el.dataset.toggle;
+    const rec = state.data.find(r=>r._row===row);
+    const newVal = rec[col]==="Sim" ? "Não" : "Sim";
+    rec[col] = newVal;
+    renderTable(); renderStats();
+    try{
+      await apiPost({ action:"updateStatus", month: state.month, rowIndex: row, col, value:newVal });
+    }catch(err){ toast("Erro ao atualizar status","error"); }
+  }));
+
+  $$("[data-edit]").forEach(el => el.addEventListener("click", (e)=>{
+    e.stopPropagation();
+    openModal(parseInt(el.dataset.edit));
+  }));
+
+  $$("[data-del]").forEach(el => el.addEventListener("click", async (e)=>{
+    e.stopPropagation();
+    if(!confirm("Deseja realmente excluir este empregador?")) return;
+    const row = parseInt(el.dataset.del);
+    try{
+      const resp = await apiPost({ action:"delete", month: state.month, rowIndex: row });
+      state.data = resp.data;
+      renderTable(); renderStats();
+      toast("Empregador excluído com sucesso");
+    }catch(err){ toast("Erro ao excluir","error"); }
+  }));
+
+  $$("#tableBody tr").forEach(tr => tr.addEventListener("click", ()=>{
+    const row = parseInt(tr.dataset.row);
+    state.selectedRow = state.selectedRow===row ? null : row;
+    renderTable();
+  }));
+}
+
+function openModal(rowIndex){
+  state.editingRow = rowIndex || null;
+  const form = $("#recordForm");
+  form.reset();
+  $("#modalTitle").textContent = rowIndex ? "Editar Empregador" : "Cadastrar Empregador";
+  if(rowIndex){
+    const rec = state.data.find(r=>r._row===rowIndex);
+    ALL_COLS.forEach(col=>{
+      const el = form.elements[col];
+      if(el) el.value = rec[col] || (NUMERIC_COLS.includes(col)?0:"");
+    });
+  }
+  $("#modalOverlay").classList.add("active");
+}
+function closeModal(){ $("#modalOverlay").classList.remove("active"); }
+
+$("#btnNew").addEventListener("click", ()=>openModal(null));
+$("#btnCancel").addEventListener("click", closeModal);
+$("#modalOverlay").addEventListener("click", (e)=>{ if(e.target.id==="modalOverlay") closeModal(); });
+
+$("#recordForm").addEventListener("submit", async (e)=>{
+  e.preventDefault();
+  const form = e.target;
+  const record = {};
+  ALL_COLS.forEach(col=>{
+    const el = form.elements[col];
+    record[col] = el ? el.value : "";
+  });
+  try{
+    const resp = await apiPost({ action:"save", month: state.month, rowIndex: state.editingRow, record });
+    state.data = resp.data;
+    closeModal();
+    renderTable(); renderStats();
+    toast("Empregador salvo com sucesso");
+  }catch(err){ toast("Erro ao salvar","error"); }
+});
+
+$("#searchInput").addEventListener("input", renderTable);
+
+$("#monthSelect").addEventListener("change", async (e)=>{
+  state.month = e.target.value;
+  await loadMonthData();
+});
+
+$("#btnNewMonth").addEventListener("click", async ()=>{
+  const ym = prompt("Digite o novo mês no formato AAAA-MM (ex: 2026-10):");
+  if(!ym || !/^\d{4}-\d{2}$/.test(ym)) { toast("Formato inválido","error"); return; }
+  try{
+    const resp = await apiPost({ action:"createMonth", month: ym });
+    state.months = resp.months;
+    populateMonths();
+    $("#monthSelect").value = ym;
+    state.month = ym;
+    await loadMonthData();
+    toast("Novo mês criado: " + ym);
+  }catch(err){ toast("Erro ao criar mês","error"); }
+});
+
+$("#btnDuplicate").addEventListener("click", async ()=>{
+  const idx = state.months.indexOf(state.month);
+  const fromMonth = state.months[idx+1] || state.months.find(m=>m!==state.month);
+  if(!fromMonth){ toast("Não há mês anterior para duplicar","error"); return; }
+  if(!confirm(`Duplicar empregadores de ${fromMonth} para ${state.month}?`)) return;
+  try{
+    const resp = await apiPost({ action:"duplicate", fromMonth, toMonth: state.month });
+    state.data = resp.data;
+    renderTable(); renderStats();
+    toast(`${resp.added} empregador(es) duplicado(s) de ${fromMonth}`);
+  }catch(err){ toast("Erro ao duplicar mês","error"); }
+});
+
+function populateMonths(){
+  $("#monthSelect").innerHTML = state.months.map(m=>`<option value="${m}">${m}</option>`).join("");
+}
+
+async function loadMonthData(){
+  $("#tableBody").innerHTML = `<tr><td colspan="${ALL_COLS.length+1}"><div class="loading"><div class="spinner"></div> Carregando...</div></td></tr>`;
+  try{
+    const resp = await apiGet("getData", { month: state.month });
+    state.data = resp.data;
+    renderTable(); renderStats();
+  }catch(err){ toast("Erro ao carregar dados do mês","error"); }
+}
+
+async function init(){
+  try{
+    const resp = await apiGet("init");
+    state.month = resp.currentMonth;
+    state.months = resp.months;
+    state.data = resp.data;
+    renderHead();
+    populateMonths();
+    $("#monthSelect").value = state.month;
+    renderTable();
+    renderStats();
+  }catch(err){
+    $("#tableBody").innerHTML = `<tr><td colspan="12"><div class="empty">Erro ao conectar com o Google Sheets. Verifique a URL do Apps Script.</div></td></tr>`;
+    toast("Erro ao conectar com o backend","error");
+  }
+}
+
+const themeToggle = $("#themeToggle");
+function applyTheme(theme){
+  document.documentElement.setAttribute("data-theme", theme);
+  themeToggle.textContent = theme==="dark" ? "☀️" : "🌙";
+  localStorage.setItem("aguia_theme", theme);
+}
+themeToggle.addEventListener("click", ()=>{
+  const current = document.documentElement.getAttribute("data-theme")==="dark" ? "light" : "dark";
+  applyTheme(current);
+});
+applyTheme(localStorage.getItem("aguia_theme") || "light");
+
+init();
+</script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v31edd6df95cf4e85bb4c19e7a9bdbcba1788362987495" integrity="sha512-iIg7k2xntmwu6/uSb5tpc/hySgZc4eoL31yB29W6tJFo2akwjPWcEqnCEdJvGexCL0KEQwVYv5BlowfhVz26hg==" data-cf-beacon='{"version":"2024.11.0","token":"55d6c902a8a143b1ab6c5051b2a1f75b","spa":2}' crossorigin="anonymous"></script>
+</body>
+</html>
