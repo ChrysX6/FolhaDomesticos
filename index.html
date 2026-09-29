@@ -1,193 +1,283 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Controle Folha de Pagamento Domésticos - Águia Contab</title>
 <style>
 :root{
-  --bg:#f4f6f9; --card:#ffffff; --text:#1f2937; --muted:#6b7280;
-  --primary:#0d3b66; --primary-light:#145a8a; --border:#d1d5db;
-  --green:#16a34a; --green-bg:#dcfce7; --red:#dc2626; --red-bg:#fee2e2;
-  --select-bg:#dbeafe; --select-border:#2563eb;
+  --azul-escuro:#0b2545;
+  --azul:#134074;
+  --azul-claro:#1b6ca8;
+  --verde:#1fa25c;
+  --vermelho:#d9463b;
+  --cinza-bg:#f2f5f9;
+  --cinza-borda:#c7d2de;
+  --texto:#1c2b3a;
+  --branco:#ffffff;
+  --card-bg:#ffffff;
+  --selecionado:#dbeafe;
 }
-[data-theme="dark"]{
-  --bg:#111827; --card:#1f2937; --text:#f3f4f6; --muted:#9ca3af;
-  --primary:#1e3a5f; --primary-light:#2c5282; --border:#374151;
-  --green:#22c55e; --green-bg:#14532d; --red:#f87171; --red-bg:#7f1d1d;
-  --select-bg:#1e3a8a; --select-border:#3b82f6;
+body.dark{
+  --cinza-bg:#0f1720;
+  --cinza-borda:#2b3a4a;
+  --texto:#e6edf3;
+  --branco:#16212c;
+  --card-bg:#16212c;
+  --selecionado:#1e3a5c;
 }
 *{box-sizing:border-box; margin:0; padding:0;}
-body{font-family:'Segoe UI', Arial, sans-serif; background:var(--bg); color:var(--text); transition:background .3s,color .3s;}
-header{background:linear-gradient(135deg,var(--primary),var(--primary-light)); color:#fff; padding:14px 24px; display:flex; align-items:center; justify-content:space-between; box-shadow:0 2px 8px rgba(0,0,0,.15); position:sticky; top:0; z-index:100;}
-header .brand{display:flex; align-items:center; gap:14px;}
-header img{height:46px; border-radius:6px; background:#fff; padding:2px;}
-header h1{font-size:18px; font-weight:600;}
-header .sub{font-size:12px; opacity:.85;}
-#themeToggle{background:rgba(255,255,255,.15); border:none; color:#fff; font-size:20px; width:40px; height:40px; border-radius:50%; cursor:pointer; transition:.2s;}
-#themeToggle:hover{background:rgba(255,255,255,.3);}
-.container{max-width:1500px; margin:20px auto; padding:0 16px;}
-.toolbar{display:flex; flex-wrap:wrap; gap:12px; align-items:center; justify-content:space-between; margin-bottom:16px; background:var(--card); padding:14px; border-radius:10px; box-shadow:0 1px 4px rgba(0,0,0,.08); border:1px solid var(--border);}
-.toolbar .group{display:flex; gap:8px; align-items:center; flex-wrap:wrap;}
-select, input[type=text], input[type=number]{padding:8px 10px; border:1px solid var(--border); border-radius:6px; background:var(--card); color:var(--text); font-size:14px;}
-button{cursor:pointer; border:none; border-radius:6px; padding:9px 16px; font-size:14px; font-weight:500; transition:.15s;}
-.btn-primary{background:var(--primary); color:#fff;}
-.btn-primary:hover{background:var(--primary-light);}
-.btn-secondary{background:#e5e7eb; color:#111827;}
-[data-theme="dark"] .btn-secondary{background:#374151; color:#f3f4f6;}
-.btn-secondary:hover{opacity:.85;}
-.btn-danger{background:var(--red); color:#fff;}
-.btn-success{background:var(--green); color:#fff;}
-.btn-sm{padding:6px 10px; font-size:12px;}
-.stats{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:10px; margin-bottom:16px;}
-.stat-card{background:var(--card); border:1px solid var(--border); border-radius:10px; padding:12px 14px; box-shadow:0 1px 4px rgba(0,0,0,.06);}
-.stat-card .num{font-size:22px; font-weight:700; color:var(--primary);}
-.stat-card .label{font-size:12px; color:var(--muted); margin-top:2px;}
-.table-wrap{background:var(--card); border-radius:10px; box-shadow:0 1px 4px rgba(0,0,0,.08); overflow:auto; border:1px solid var(--border);}
-table{width:100%; border-collapse:collapse; font-size:13px; min-width:1100px;}
-thead th{background:var(--primary); color:#fff; padding:10px 8px; text-align:left; white-space:nowrap; border:1px solid var(--border); position:sticky; top:0;}
-tbody td{padding:8px; border:1px solid var(--border); white-space:nowrap;}
-tbody tr:hover{background:rgba(13,59,102,.06);}
-[data-theme="dark"] tbody tr:hover{background:rgba(59,130,246,.1);}
-tbody tr.selected{background:var(--select-bg) !important; outline:2px solid var(--select-border);}
-.badge{display:inline-block; padding:4px 10px; border-radius:20px; font-size:12px; font-weight:600; cursor:pointer; user-select:none;}
-.badge.sim{background:var(--green-bg); color:var(--green);}
-.badge.nao{background:var(--red-bg); color:var(--red);}
-.num-badge{display:inline-block; padding:4px 10px; border-radius:6px; font-size:13px; font-weight:700; background:var(--select-bg); color:var(--primary);}
-.actions{display:flex; gap:6px;}
-.modal-overlay{display:none; position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:200; align-items:center; justify-content:center;}
+body{
+  font-family:'Segoe UI', Arial, sans-serif;
+  background:var(--cinza-bg);
+  color:var(--texto);
+  transition:background .2s, color .2s;
+}
+header{
+  background:linear-gradient(90deg,var(--azul-escuro),var(--azul));
+  color:#fff;
+  padding:14px 28px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  flex-wrap:wrap;
+  gap:14px;
+  box-shadow:0 2px 10px rgba(0,0,0,.15);
+  position:sticky;
+  top:0;
+  z-index:50;
+}
+.brand{display:flex; align-items:center; gap:14px;}
+.brand img{height:46px; border-radius:8px; background:#fff; padding:3px; display:block;}
+.brand h1{font-size:18px; margin:0; font-weight:600; line-height:1.2;}
+.brand span{font-size:12px; opacity:.85;}
+.header-actions{display:flex; gap:10px; align-items:center; flex-wrap:wrap;}
+select, input[type=text], input[type=number], input[type=month], textarea{
+  padding:9px 12px; border-radius:8px; border:1px solid var(--cinza-borda); font-size:14px; outline:none;
+  background:var(--branco); color:var(--texto);
+}
+header select{border:none;}
+.btn{
+  border:none; padding:10px 16px; border-radius:8px; font-size:14px; font-weight:600;
+  cursor:pointer; display:inline-flex; align-items:center; gap:6px; transition:.15s; white-space:nowrap;
+}
+.btn-primary{background:var(--azul-claro); color:#fff;}
+.btn-primary:hover{background:#155f8c;}
+.btn-success{background:var(--verde); color:#fff;}
+.btn-success:hover{background:#188a4c;}
+.btn-danger{background:var(--vermelho); color:#fff;}
+.btn-danger:hover{background:#b8382e;}
+.btn-outline{background:#fff; color:var(--azul); border:1px solid var(--cinza-borda);}
+.btn-outline:hover{background:var(--cinza-bg);}
+.btn-theme{
+  background:rgba(255,255,255,.15);
+  color:#fff;
+  border:1px solid rgba(255,255,255,.3);
+  border-radius:50%;
+  width:40px;
+  height:40px;
+  min-width:40px;
+  cursor:pointer;
+  font-size:18px;
+  line-height:1;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:0;
+}
+.btn-theme:hover{background:rgba(255,255,255,.28);}
+main{padding:24px 28px 60px;}
+.cards{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:14px; margin-bottom:22px;}
+.card{background:var(--card-bg); border:1px solid var(--cinza-borda); border-radius:12px; padding:14px 16px; box-shadow:0 1px 3px rgba(0,0,0,.04);}
+.card .num{font-size:24px; font-weight:700; color:var(--azul-claro);}
+.card .label{font-size:12px; color:#7c8ba0; margin-top:4px;}
+.toolbar{display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:16px;}
+.toolbar-left{display:flex; gap:10px; flex-wrap:wrap; align-items:center;}
+.table-wrap{background:var(--card-bg); border-radius:12px; border:1px solid var(--cinza-borda); overflow:auto; box-shadow:0 1px 4px rgba(0,0,0,.04);}
+table{border-collapse:collapse; width:100%; min-width:1300px; font-size:13.5px;}
+thead th{background:var(--azul-escuro); color:#fff; text-align:left; padding:11px 10px; position:sticky; top:0; white-space:nowrap; font-weight:600; border:1px solid #1c3a63;}
+tbody td{padding:9px 10px; border:1px solid var(--cinza-borda); white-space:nowrap;}
+tbody tr:hover{background:var(--cinza-bg); cursor:pointer;}
+tbody tr.row-selected{background:var(--selecionado) !important; outline:2px solid var(--azul-claro); outline-offset:-2px;}
+.badge{display:inline-flex; align-items:center; gap:4px; padding:5px 11px; border-radius:20px; font-size:12.5px; font-weight:700; cursor:pointer; border:none; user-select:none;}
+.badge.sim{background:#e3f8ea; color:var(--verde);}
+.badge.nao{background:#fbe8e6; color:var(--vermelho);}
+.numero-cell{font-weight:700; color:var(--azul-claro); text-align:center;}
+.actions-col{display:flex; gap:6px;}
+.icon-btn{border:none; background:#eef3f8; color:var(--azul); width:30px; height:30px; border-radius:7px; cursor:pointer; font-size:14px;}
+body.dark .icon-btn{background:#233242; color:#9fc4e8;}
+.icon-btn.del{color:var(--vermelho);}
+.icon-btn:hover{filter:brightness(0.95);}
+.empty{text-align:center; padding:50px 20px; color:#8492a3;}
+.modal-overlay{position:fixed; inset:0; background:rgba(11,37,69,.55); display:none; align-items:center; justify-content:center; z-index:200; padding:20px;}
 .modal-overlay.active{display:flex;}
-.modal{background:var(--card); border-radius:12px; padding:24px; width:100%; max-width:520px; max-height:90vh; overflow-y:auto; box-shadow:0 10px 40px rgba(0,0,0,.25);}
-.modal h2{margin-bottom:16px; color:var(--primary); font-size:18px;}
-.form-group{margin-bottom:12px;}
-.form-group label{display:block; font-size:13px; margin-bottom:4px; color:var(--muted); font-weight:600;}
-.form-group input, .form-group select{width:100%;}
-.form-row{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
-.modal-footer{display:flex; justify-content:flex-end; gap:10px; margin-top:16px;}
-.toast{position:fixed; bottom:20px; right:20px; padding:14px 20px; border-radius:8px; color:#fff; font-size:14px; z-index:300; box-shadow:0 4px 12px rgba(0,0,0,.2); animation:slideIn .3s;}
-.toast.success{background:var(--green);}
-.toast.error{background:var(--red);}
-@keyframes slideIn{from{transform:translateX(100%); opacity:0;} to{transform:translateX(0); opacity:1;}}
-.loading{display:flex; align-items:center; justify-content:center; padding:60px; color:var(--muted); font-size:15px; gap:10px;}
-.spinner{width:20px; height:20px; border:3px solid var(--border); border-top-color:var(--primary); border-radius:50%; animation:spin 0.8s linear infinite;}
+.modal{background:var(--card-bg); color:var(--texto); border-radius:14px; max-width:640px; width:100%; max-height:90vh; overflow:auto; padding:26px 28px; box-shadow:0 10px 40px rgba(0,0,0,.25);}
+.modal h2{margin-top:0; color:var(--azul-claro); font-size:19px;}
+.form-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:16px;}
+.form-grid .full{grid-column:1/-1;}
+.form-group label{display:block; font-size:12.5px; font-weight:600; margin-bottom:5px; color:#7c8ba0;}
+.form-group select, .form-group input, .form-group textarea{width:100%;}
+.status-toggle-group{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:6px;}
+.status-item{display:flex; justify-content:space-between; align-items:center; background:var(--cinza-bg); padding:8px 12px; border-radius:8px; font-size:13px; font-weight:600; border:1px solid var(--cinza-borda);}
+.modal-footer{display:flex; justify-content:flex-end; gap:10px; margin-top:22px;}
+.toast{position:fixed; bottom:24px; right:24px; background:var(--azul-escuro); color:#fff; padding:14px 20px; border-radius:10px; font-size:14px; box-shadow:0 6px 20px rgba(0,0,0,.25); z-index:300; display:none; max-width:320px;}
+.toast.success{background:var(--verde);}
+.toast.error{background:var(--vermelho);}
+.loading-overlay{position:fixed; inset:0; background:rgba(255,255,255,.7); display:none; align-items:center; justify-content:center; z-index:400; font-weight:700; color:var(--azul-escuro); font-size:15px;}
+body.dark .loading-overlay{background:rgba(10,16,22,.75); color:#e6edf3;}
+.loading-overlay.active{display:flex;}
+.spinner{width:20px; height:20px; border:3px solid var(--azul-claro); border-top-color:transparent; border-radius:50%; animation:spin 0.8s linear infinite; margin-right:10px;}
 @keyframes spin{to{transform:rotate(360deg);}}
-.empty{text-align:center; padding:40px; color:var(--muted);}
+footer{text-align:center; padding:18px; font-size:12px; color:#8492a3;}
+@media(max-width:700px){
+  .form-grid, .status-toggle-group{grid-template-columns:1fr;}
+  main{padding:16px;}
+}
 </style>
 </head>
 <body>
 
 <header>
   <div class="brand">
-    <img src="https://chrysx6.github.io/LinksAguiaContab/links/img/logo1.jpg" alt="Águia Contab">
+    <img src="https://chrysx6.github.io/LinksAguiaContab/links/img/logo1.jpg" alt="Águia Contab" />
     <div>
       <h1>Controle Folha de Pagamento Domésticos</h1>
-      <div class="sub">Águia Contab - Painel de Controle Mensal</div>
+      <span>Águia Contab • Painel Mensal</span>
     </div>
   </div>
-  <button id="themeToggle" title="Alternar tema">🌙</button>
+  <div class="header-actions">
+    <select id="monthSelect" title="Selecionar mês"></select>
+    <button class="btn btn-outline" id="btnNovoMes" title="Criar novo mês em branco">＋ Novo Mês</button>
+    <button class="btn btn-success" id="btnDuplicar" title="Duplicar empregadores do mês anterior">⧉ Duplicar Mês Passado</button>
+    <button class="btn-theme" id="btnTheme" title="Alternar modo claro/escuro">🌙</button>
+  </div>
 </header>
 
-<div class="container">
+<main>
+  <div class="cards" id="cardsWrap"></div>
 
   <div class="toolbar">
-    <div class="group">
-      <label style="font-weight:600; font-size:13px;">Mês:</label>
-      <select id="monthSelect"></select>
-      <button class="btn-secondary btn-sm" id="btnNewMonth">+ Novo Mês</button>
-      <button class="btn-secondary btn-sm" id="btnDuplicate">📋 Duplicar Mês Passado</button>
+    <div class="toolbar-left">
+      <input type="text" id="searchInput" placeholder="🔍 Buscar por empregador, CPF ou analista..." style="min-width:280px;" />
     </div>
-    <div class="group">
-      <input type="text" id="searchInput" placeholder="Buscar empregador, CPF ou analista...">
-      <button class="btn-primary" id="btnNew">+ Cadastrar Empregador</button>
-    </div>
+    <button class="btn btn-primary" id="btnNovoEmpregador">+ Cadastrar Empregador</button>
   </div>
-
-  <div class="stats" id="statsBox"></div>
 
   <div class="table-wrap">
-    <table id="dataTable">
-      <thead><tr id="tableHead"></tr></thead>
-      <tbody id="tableBody">
-        <tr><td colspan="12"><div class="loading"><div class="spinner"></div> Sincronizando com o Google Sheets...</div></td></tr>
-      </tbody>
+    <table>
+      <thead><tr id="theadRow"></tr></thead>
+      <tbody id="tbody"></tbody>
     </table>
+    <div class="empty" id="emptyState" style="display:none;">Nenhum empregador cadastrado neste mês ainda.</div>
   </div>
+</main>
 
-</div>
+<footer>Águia Contab © <span id="anoAtual"></span> — Sistema de Controle de Folha de Pagamento Domésticos</footer>
 
+<!-- MODAL CADASTRO/EDIÇÃO -->
 <div class="modal-overlay" id="modalOverlay">
   <div class="modal">
     <h2 id="modalTitle">Cadastrar Empregador</h2>
-    <form id="recordForm">
-      <div class="form-row">
-        <div class="form-group"><label>Analista</label><input type="text" name="ANALISTA"></div>
-        <div class="form-group"><label>Tipo</label><input type="text" name="TIPO" placeholder="PF"></div>
-      </div>
-      <div class="form-group"><label>Empregador</label><input type="text" name="EMPREGADOR" required></div>
-      <div class="form-row">
-        <div class="form-group"><label>CPF do Empregador</label><input type="text" name="EMPREGADOR CPF"></div>
-        <div class="form-group"><label>Colaboradores Ativos</label><input type="number" name="COLABORADORES ATIVOS" min="0" value="1"></div>
-      </div>
-      <div class="form-row">
-        <div class="form-group"><label>Código de Acesso</label><input type="text" name="CODIGO DE ACESSO"></div>
-        <div class="form-group"><label>Senha</label><input type="text" name="SENHA"></div>
-      </div>
-      <div class="form-row">
-        <div class="form-group"><label>Adiantamento</label>
-          <select name="ADIANTAMENTO"><option>Não</option><option>Sim</option></select>
+    <form id="companyForm">
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Analista</label>
+          <input type="text" id="f_ANALISTA" />
         </div>
-        <div class="form-group"><label>Pagamento</label>
-          <select name="PAGAMENTO"><option>Não</option><option>Sim</option></select>
+        <div class="form-group">
+          <label>Tipo</label>
+          <input type="text" id="f_TIPO" placeholder="Ex: PF" />
         </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group"><label>DAE</label>
-          <select name="DAE"><option>Não</option><option>Sim</option></select>
+        <div class="form-group full">
+          <label>Empregador *</label>
+          <input type="text" id="f_EMPREGADOR" required />
         </div>
-        <div class="form-group"><label>E-mail Enviado</label>
-          <select name="E-MAIL ENVIADO"><option>Não</option><option>Sim</option></select>
+        <div class="form-group">
+          <label>CPF do Empregador *</label>
+          <input type="text" id="f_EMPREGADOR_CPF" required />
         </div>
-      </div>
-      <div class="form-group"><label>Mensageiro</label>
-        <select name="MENSSAGER"><option>Não</option><option>Sim</option></select>
+        <div class="form-group">
+          <label>Colaboradores Ativos</label>
+          <input type="number" id="f_COLABORADORES_ATIVOS" min="0" value="1" />
+        </div>
+        <div class="form-group">
+          <label>Código de Acesso</label>
+          <input type="text" id="f_CODIGO_DE_ACESSO" />
+        </div>
+        <div class="form-group">
+          <label>Senha</label>
+          <input type="text" id="f_SENHA" />
+        </div>
+        <div class="form-group full">
+          <label>Checklist do mês (Sim / Não)</label>
+          <div class="status-toggle-group" id="statusToggleGroup"></div>
+        </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn-secondary" id="btnCancel">Cancelar</button>
-        <button type="submit" class="btn-primary">Salvar</button>
+        <button type="button" class="btn btn-outline" id="btnCancelar">Cancelar</button>
+        <button type="submit" class="btn btn-primary">💾 Salvar</button>
       </div>
     </form>
   </div>
 </div>
 
+<div class="loading-overlay" id="loadingOverlay"><div class="spinner"></div> Sincronizando com o Google Sheets...</div>
+<div class="toast" id="toast"></div>
+
 <script>
+/* =========================================================================
+   URL DO SEU APPS SCRIPT (planilha "Controle Folha de Pagamento Domésticos")
+   ========================================================================= */
 const API_URL = "https://script.google.com/macros/s/AKfycbyRc_b_jR4eQctnJJQAh2CuC6Rvdbe9ZDju-FmOW4SO9NbbZmoG6V5IXLZuZXQtREv8/exec";
+/* ========================================================================= */
 
 const BASE_COLS = ["ANALISTA","TIPO","EMPREGADOR","EMPREGADOR CPF","CODIGO DE ACESSO","SENHA"];
 const STATUS_COLS = ["ADIANTAMENTO","PAGAMENTO","DAE","E-MAIL ENVIADO","MENSSAGER"];
 const NUMERIC_COLS = ["COLABORADORES ATIVOS"];
 const ALL_COLS = BASE_COLS.concat(STATUS_COLS).concat(NUMERIC_COLS);
 
-let state = { month: null, months: [], data: [], editingRow: null, selectedRow: null };
+const LABELS = {
+  "ANALISTA":"Analista","TIPO":"Tipo","EMPREGADOR":"Empregador","EMPREGADOR CPF":"CPF Empregador",
+  "CODIGO DE ACESSO":"Código Acesso","SENHA":"Senha","ADIANTAMENTO":"Adiantamento","PAGAMENTO":"Pagamento",
+  "DAE":"DAE","E-MAIL ENVIADO":"E-mail Enviado","MENSSAGER":"Mensageiro","COLABORADORES ATIVOS":"Colaboradores Ativos"
+};
 
-const $ = sel => document.querySelector(sel);
-const $$ = sel => document.querySelectorAll(sel);
+let STATE = { headers: ALL_COLS, statusCols: STATUS_COLS, numericCols: NUMERIC_COLS, rows: [], month: null, months: [], editingRow: null, selectedRow: null };
 
-function toast(msg, type="success"){
-  const t = document.createElement("div");
-  t.className = "toast " + type;
-  t.textContent = msg;
-  document.body.appendChild(t);
-  setTimeout(()=>t.remove(), 3500);
+document.getElementById('anoAtual').textContent = new Date().getFullYear();
+
+// ---------- MODO NOTURNO ----------
+function applyTheme(theme){
+  document.body.classList.toggle('dark', theme === 'dark');
+  document.getElementById('btnTheme').textContent = theme === 'dark' ? '☀️' : '🌙';
+  localStorage.setItem('aguia_theme_domesticos', theme);
+}
+(function initTheme(){
+  const saved = localStorage.getItem('aguia_theme_domesticos') || 'light';
+  applyTheme(saved);
+})();
+document.getElementById('btnTheme').addEventListener('click', () => {
+  const current = document.body.classList.contains('dark') ? 'dark' : 'light';
+  applyTheme(current === 'dark' ? 'light' : 'dark');
+});
+
+function showLoading(v){ document.getElementById('loadingOverlay').classList.toggle('active', v); }
+function toast(msg, type){
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = 'toast ' + (type || '');
+  el.style.display = 'block';
+  setTimeout(() => { el.style.display = 'none'; }, 3800);
 }
 
-async function apiGet(action, params={}){
+async function apiGet(action, params){
   const url = new URL(API_URL);
-  url.searchParams.set("action", action);
-  url.searchParams.set("_t", Date.now());
-  Object.keys(params).forEach(k => url.searchParams.set(k, params[k]));
+  url.searchParams.set('action', action);
+  url.searchParams.set('_t', Date.now());
+  Object.keys(params || {}).forEach(k => url.searchParams.set(k, params[k]));
   for(let attempt=0; attempt<2; attempt++){
     try{
-      const res = await fetch(url.toString(), { method:"GET", cache:"no-store" });
+      const res = await fetch(url.toString(), { method:'GET', cache:'no-store' });
       const text = await res.text();
       return JSON.parse(text);
     }catch(err){
@@ -196,15 +286,14 @@ async function apiGet(action, params={}){
     }
   }
 }
-
 async function apiPost(body){
   for(let attempt=0; attempt<2; attempt++){
     try{
       const res = await fetch(API_URL, {
-        method:"POST",
-        headers:{"Content-Type":"text/plain;charset=utf-8"},
+        method:'POST',
+        headers:{'Content-Type':'text/plain;charset=utf-8'},
         body: JSON.stringify(body),
-        cache:"no-store"
+        cache:'no-store'
       });
       const text = await res.text();
       return JSON.parse(text);
@@ -215,210 +304,297 @@ async function apiPost(body){
   }
 }
 
-function renderHead(){
-  const labels = {
-    "ANALISTA":"Analista","TIPO":"Tipo","EMPREGADOR":"Empregador","EMPREGADOR CPF":"CPF Empregador",
-    "CODIGO DE ACESSO":"Código Acesso","SENHA":"Senha","ADIANTAMENTO":"Adiantamento","PAGAMENTO":"Pagamento",
-    "DAE":"DAE","E-MAIL ENVIADO":"E-mail Enviado","MENSSAGER":"Mensageiro","COLABORADORES ATIVOS":"Colaboradores Ativos"
-  };
-  let html = "";
-  ALL_COLS.forEach(c => html += `<th>${labels[c]||c}</th>`);
-  html += "<th>Ações</th>";
-  $("#tableHead").innerHTML = html;
-}
-
-function renderStats(){
-  const total = state.data.length;
-  let html = `<div class="stat-card"><div class="num">${total}</div><div class="label">Empregadores Cadastrados</div></div>`;
-  STATUS_COLS.forEach(col => {
-    const count = state.data.filter(r => r[col]==="Sim").length;
-    const label = {"ADIANTAMENTO":"Adiantamento OK","PAGAMENTO":"Pagamento OK","DAE":"DAE OK","E-MAIL ENVIADO":"E-mail Enviado","MENSSAGER":"Mensageiro OK"}[col]||col;
-    html += `<div class="stat-card"><div class="num">${count}/${total}</div><div class="label">${label}</div></div>`;
-  });
-  $("#statsBox").innerHTML = html;
-}
-
-function renderTable(){
-  const filter = ($("#searchInput").value||"").toLowerCase();
-  const rows = state.data.filter(r =>
-    !filter ||
-    (r.EMPREGADOR||"").toLowerCase().includes(filter) ||
-    (r["EMPREGADOR CPF"]||"").toLowerCase().includes(filter) ||
-    (r.ANALISTA||"").toLowerCase().includes(filter)
-  );
-
-  if(rows.length===0){
-    $("#tableBody").innerHTML = `<tr><td colspan="${ALL_COLS.length+1}"><div class="empty">Nenhum empregador cadastrado neste mês.</div></td></tr>`;
-    return;
-  }
-
-  let html = "";
-  rows.forEach(r => {
-    const selectedClass = state.selectedRow===r._row ? "selected" : "";
-    html += `<tr class="${selectedClass}" data-row="${r._row}">`;
-    BASE_COLS.forEach(col => html += `<td>${r[col]||""}</td>`);
-    STATUS_COLS.forEach(col => {
-      const val = r[col]||"Não";
-      const cls = val==="Sim" ? "sim":"nao";
-      html += `<td><span class="badge ${cls}" data-toggle="${col}" data-row="${r._row}">${val}</span></td>`;
-    });
-    NUMERIC_COLS.forEach(col => html += `<td><span class="num-badge">${r[col]||0}</span></td>`);
-    html += `<td class="actions">
-      <button class="btn-secondary btn-sm" data-edit="${r._row}">✏️</button>
-      <button class="btn-danger btn-sm" data-del="${r._row}">🗑️</button>
-    </td></tr>`;
-  });
-  $("#tableBody").innerHTML = html;
-
-  $$("[data-toggle]").forEach(el => el.addEventListener("click", async (e)=>{
-    e.stopPropagation();
-    const row = parseInt(el.dataset.row);
-    const col = el.dataset.toggle;
-    const rec = state.data.find(r=>r._row===row);
-    const newVal = rec[col]==="Sim" ? "Não" : "Sim";
-    rec[col] = newVal;
-    renderTable(); renderStats();
-    try{
-      await apiPost({ action:"updateStatus", month: state.month, rowIndex: row, col, value:newVal });
-    }catch(err){ toast("Erro ao atualizar status","error"); }
-  }));
-
-  $$("[data-edit]").forEach(el => el.addEventListener("click", (e)=>{
-    e.stopPropagation();
-    openModal(parseInt(el.dataset.edit));
-  }));
-
-  $$("[data-del]").forEach(el => el.addEventListener("click", async (e)=>{
-    e.stopPropagation();
-    if(!confirm("Deseja realmente excluir este empregador?")) return;
-    const row = parseInt(el.dataset.del);
-    try{
-      const resp = await apiPost({ action:"delete", month: state.month, rowIndex: row });
-      state.data = resp.data;
-      renderTable(); renderStats();
-      toast("Empregador excluído com sucesso");
-    }catch(err){ toast("Erro ao excluir","error"); }
-  }));
-
-  $$("#tableBody tr").forEach(tr => tr.addEventListener("click", ()=>{
-    const row = parseInt(tr.dataset.row);
-    state.selectedRow = state.selectedRow===row ? null : row;
-    renderTable();
-  }));
-}
-
-function openModal(rowIndex){
-  state.editingRow = rowIndex || null;
-  const form = $("#recordForm");
-  form.reset();
-  $("#modalTitle").textContent = rowIndex ? "Editar Empregador" : "Cadastrar Empregador";
-  if(rowIndex){
-    const rec = state.data.find(r=>r._row===rowIndex);
-    ALL_COLS.forEach(col=>{
-      const el = form.elements[col];
-      if(el) el.value = rec[col] || (NUMERIC_COLS.includes(col)?0:"");
-    });
-  }
-  $("#modalOverlay").classList.add("active");
-}
-function closeModal(){ $("#modalOverlay").classList.remove("active"); }
-
-$("#btnNew").addEventListener("click", ()=>openModal(null));
-$("#btnCancel").addEventListener("click", closeModal);
-$("#modalOverlay").addEventListener("click", (e)=>{ if(e.target.id==="modalOverlay") closeModal(); });
-
-$("#recordForm").addEventListener("submit", async (e)=>{
-  e.preventDefault();
-  const form = e.target;
-  const record = {};
-  ALL_COLS.forEach(col=>{
-    const el = form.elements[col];
-    record[col] = el ? el.value : "";
-  });
-  try{
-    const resp = await apiPost({ action:"save", month: state.month, rowIndex: state.editingRow, record });
-    state.data = resp.data;
-    closeModal();
-    renderTable(); renderStats();
-    toast("Empregador salvo com sucesso");
-  }catch(err){ toast("Erro ao salvar","error"); }
-});
-
-$("#searchInput").addEventListener("input", renderTable);
-
-$("#monthSelect").addEventListener("change", async (e)=>{
-  state.month = e.target.value;
-  await loadMonthData();
-});
-
-$("#btnNewMonth").addEventListener("click", async ()=>{
-  const ym = prompt("Digite o novo mês no formato AAAA-MM (ex: 2026-10):");
-  if(!ym || !/^\d{4}-\d{2}$/.test(ym)) { toast("Formato inválido","error"); return; }
-  try{
-    const resp = await apiPost({ action:"createMonth", month: ym });
-    state.months = resp.months;
-    populateMonths();
-    $("#monthSelect").value = ym;
-    state.month = ym;
-    await loadMonthData();
-    toast("Novo mês criado: " + ym);
-  }catch(err){ toast("Erro ao criar mês","error"); }
-});
-
-$("#btnDuplicate").addEventListener("click", async ()=>{
-  const idx = state.months.indexOf(state.month);
-  const fromMonth = state.months[idx+1] || state.months.find(m=>m!==state.month);
-  if(!fromMonth){ toast("Não há mês anterior para duplicar","error"); return; }
-  if(!confirm(`Duplicar empregadores de ${fromMonth} para ${state.month}?`)) return;
-  try{
-    const resp = await apiPost({ action:"duplicate", fromMonth, toMonth: state.month });
-    state.data = resp.data;
-    renderTable(); renderStats();
-    toast(`${resp.added} empregador(es) duplicado(s) de ${fromMonth}`);
-  }catch(err){ toast("Erro ao duplicar mês","error"); }
-});
-
-function populateMonths(){
-  $("#monthSelect").innerHTML = state.months.map(m=>`<option value="${m}">${m}</option>`).join("");
-}
-
-async function loadMonthData(){
-  $("#tableBody").innerHTML = `<tr><td colspan="${ALL_COLS.length+1}"><div class="loading"><div class="spinner"></div> Carregando...</div></td></tr>`;
-  try{
-    const resp = await apiGet("getData", { month: state.month });
-    state.data = resp.data;
-    renderTable(); renderStats();
-  }catch(err){ toast("Erro ao carregar dados do mês","error"); }
+function formatMonthLabel(key){
+  const meses = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+  const [y,m] = key.split('-');
+  return meses[parseInt(m,10)-1] + '/' + y;
 }
 
 async function init(){
+  showLoading(true);
   try{
-    const resp = await apiGet("init");
-    state.month = resp.currentMonth;
-    state.months = resp.months;
-    state.data = resp.data;
-    renderHead();
+    const resp = await apiGet('init', {});
+    if(resp.success === false) throw new Error(resp.error || 'Falha ao iniciar.');
+    STATE.month = resp.currentMonth;
+    STATE.months = resp.months || [];
+    STATE.rows = resp.data || [];
+    STATE.headers = resp.headers || ALL_COLS;
+    STATE.statusCols = resp.statusCols || STATUS_COLS;
+    STATE.numericCols = resp.numericCols || NUMERIC_COLS;
+
     populateMonths();
-    $("#monthSelect").value = state.month;
+    buildTableHead();
     renderTable();
-    renderStats();
+    renderCards();
   }catch(err){
-    $("#tableBody").innerHTML = `<tr><td colspan="12"><div class="empty">Erro ao conectar com o Google Sheets. Verifique a URL do Apps Script.</div></td></tr>`;
-    toast("Erro ao conectar com o backend","error");
+    toast('Erro ao conectar com a planilha. Verifique a API_URL. ' + err.message, 'error');
   }
+  showLoading(false);
 }
 
-const themeToggle = $("#themeToggle");
-function applyTheme(theme){
-  document.documentElement.setAttribute("data-theme", theme);
-  themeToggle.textContent = theme==="dark" ? "☀️" : "🌙";
-  localStorage.setItem("aguia_theme", theme);
+function populateMonths(){
+  const select = document.getElementById('monthSelect');
+  select.innerHTML = STATE.months.map(m => `<option value="${m}">${formatMonthLabel(m)}</option>`).join('');
+  select.value = STATE.month;
 }
-themeToggle.addEventListener("click", ()=>{
-  const current = document.documentElement.getAttribute("data-theme")==="dark" ? "light" : "dark";
-  applyTheme(current);
+
+async function loadMonthData(){
+  showLoading(true);
+  try{
+    const resp = await apiGet('getData', { month: STATE.month });
+    STATE.rows = resp.data || [];
+    STATE.selectedRow = null;
+    renderTable();
+    renderCards();
+  }catch(err){
+    toast('Erro ao carregar dados do mês.', 'error');
+  }
+  showLoading(false);
+}
+
+function buildTableHead(){
+  const thead = document.getElementById('theadRow');
+  thead.innerHTML = STATE.headers.map(h => `<th>${LABELS[h]||h}</th>`).join('') + '<th>Ações</th>';
+}
+
+function renderCards(){
+  const wrap = document.getElementById('cardsWrap');
+  const total = STATE.rows.length;
+  let html = `<div class="card"><div class="num">${total}</div><div class="label">Empregadores cadastrados</div></div>`;
+  STATE.statusCols.forEach(col => {
+    const count = STATE.rows.filter(r => r[col] === 'Sim').length;
+    html += `<div class="card"><div class="num">${count}/${total}</div><div class="label">${LABELS[col]||col}</div></div>`;
+  });
+  wrap.innerHTML = html;
+}
+
+function renderTable(filter){
+  filter = filter !== undefined ? filter : document.getElementById('searchInput').value;
+  const tbody = document.getElementById('tbody');
+  const emptyState = document.getElementById('emptyState');
+  let rows = STATE.rows;
+
+  if(filter){
+    const f = filter.toLowerCase();
+    rows = rows.filter(r =>
+      String(r['EMPREGADOR']||'').toLowerCase().includes(f) ||
+      String(r['EMPREGADOR CPF']||'').toLowerCase().includes(f) ||
+      String(r['ANALISTA']||'').toLowerCase().includes(f)
+    );
+  }
+
+  if(rows.length === 0){
+    tbody.innerHTML = '';
+    emptyState.style.display = 'block';
+    return;
+  }
+  emptyState.style.display = 'none';
+
+  tbody.innerHTML = rows.map(r => {
+    const cells = STATE.headers.map(h => {
+      if(STATE.statusCols.includes(h)){
+        const val = r[h] === 'Sim' ? 'Sim' : 'Não';
+        const cls = val === 'Sim' ? 'sim' : 'nao';
+        return `<td><button class="badge ${cls}" onclick="event.stopPropagation(); toggleStatus(${r._row}, '${h.replace(/'/g,"\\'")}', '${val}')">${val === 'Sim' ? '✔ Sim' : '✘ Não'}</button></td>`;
+      }
+      if(STATE.numericCols.includes(h)){
+        return `<td class="numero-cell">${r[h] !== undefined && r[h] !== '' ? r[h] : 0}</td>`;
+      }
+      return `<td>${r[h] !== undefined ? r[h] : ''}</td>`;
+    }).join('');
+    const selectedCls = STATE.selectedRow === r._row ? ' row-selected' : '';
+    return `<tr data-row="${r._row}" class="${selectedCls.trim()}" onclick="selectRow(${r._row})">${cells}<td class="actions-col">
+        <button class="icon-btn" title="Editar" onclick="event.stopPropagation(); openEdit(${r._row})">✎</button>
+        <button class="icon-btn del" title="Excluir" onclick="event.stopPropagation(); confirmDelete(${r._row}, '${String(r['EMPREGADOR']||'').replace(/'/g,"\\'")}')">🗑</button>
+      </td></tr>`;
+  }).join('');
+}
+
+function selectRow(rowIndex){
+  STATE.selectedRow = STATE.selectedRow === rowIndex ? null : rowIndex;
+  document.querySelectorAll('#tbody tr').forEach(tr => {
+    tr.classList.toggle('row-selected', parseInt(tr.dataset.row,10) === STATE.selectedRow);
+  });
+}
+window.selectRow = selectRow;
+
+async function toggleStatus(rowIndex, col, currentVal){
+  const newVal = currentVal === 'Sim' ? 'Não' : 'Sim';
+  const rec = STATE.rows.find(r => r._row === rowIndex);
+  if(rec) rec[col] = newVal;
+  renderTable();
+  renderCards();
+
+  try{
+    const resp = await apiPost({ action:'updateStatus', month: STATE.month, rowIndex, col, value:newVal });
+    if(resp.success === false){ toast(resp.error || 'Erro ao atualizar campo.', 'error'); await loadMonthData(); }
+  }catch(err){
+    toast('Erro de conexão ao atualizar status.', 'error');
+    await loadMonthData();
+  }
+}
+window.toggleStatus = toggleStatus;
+
+function buildStatusToggles(rowData){
+  const wrap = document.getElementById('statusToggleGroup');
+  wrap.innerHTML = STATE.statusCols.map(col => {
+    const val = rowData && rowData[col] === 'Sim' ? 'Sim' : 'Não';
+    return `<div class="status-item">
+      <span>${LABELS[col]||col}</span>
+      <button type="button" class="badge ${val === 'Sim' ? 'sim':'nao'}" data-field="${col}" onclick="flipFormToggle(this)">${val === 'Sim' ? '✔ Sim' : '✘ Não'}</button>
+    </div>`;
+  }).join('');
+}
+function flipFormToggle(btn){
+  const isSim = btn.classList.contains('sim');
+  btn.classList.toggle('sim', !isSim);
+  btn.classList.toggle('nao', isSim);
+  btn.textContent = !isSim ? '✔ Sim' : '✘ Não';
+}
+window.flipFormToggle = flipFormToggle;
+
+function openCreate(){
+  STATE.editingRow = null;
+  document.getElementById('modalTitle').textContent = 'Cadastrar Empregador';
+  document.getElementById('companyForm').reset();
+  document.getElementById('f_COLABORADORES_ATIVOS').value = 1;
+  buildStatusToggles(null);
+  document.getElementById('modalOverlay').classList.add('active');
+}
+
+function openEdit(rowIndex){
+  const row = STATE.rows.find(r => r._row === rowIndex);
+  if(!row) return;
+  STATE.editingRow = rowIndex;
+  document.getElementById('modalTitle').textContent = 'Editar Empregador';
+  document.getElementById('f_ANALISTA').value = row['ANALISTA'] || '';
+  document.getElementById('f_TIPO').value = row['TIPO'] || '';
+  document.getElementById('f_EMPREGADOR').value = row['EMPREGADOR'] || '';
+  document.getElementById('f_EMPREGADOR_CPF').value = row['EMPREGADOR CPF'] || '';
+  document.getElementById('f_COLABORADORES_ATIVOS').value = row['COLABORADORES ATIVOS'] || 0;
+  document.getElementById('f_CODIGO_DE_ACESSO').value = row['CODIGO DE ACESSO'] || '';
+  document.getElementById('f_SENHA').value = row['SENHA'] || '';
+  buildStatusToggles(row);
+  document.getElementById('modalOverlay').classList.add('active');
+}
+window.openEdit = openEdit;
+
+function closeModal(){
+  document.getElementById('modalOverlay').classList.remove('active');
+}
+
+document.getElementById('btnNovoEmpregador').addEventListener('click', openCreate);
+document.getElementById('btnCancelar').addEventListener('click', closeModal);
+document.getElementById('modalOverlay').addEventListener('click', (e) => {
+  if(e.target.id === 'modalOverlay') closeModal();
 });
-applyTheme(localStorage.getItem("aguia_theme") || "light");
+
+document.getElementById('companyForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const record = {
+    'ANALISTA': document.getElementById('f_ANALISTA').value,
+    'TIPO': document.getElementById('f_TIPO').value,
+    'EMPREGADOR': document.getElementById('f_EMPREGADOR').value,
+    'EMPREGADOR CPF': document.getElementById('f_EMPREGADOR_CPF').value,
+    'COLABORADORES ATIVOS': document.getElementById('f_COLABORADORES_ATIVOS').value,
+    'CODIGO DE ACESSO': document.getElementById('f_CODIGO_DE_ACESSO').value,
+    'SENHA': document.getElementById('f_SENHA').value,
+  };
+  document.querySelectorAll('#statusToggleGroup .badge').forEach(btn => {
+    record[btn.dataset.field] = btn.classList.contains('sim') ? 'Sim' : 'Não';
+  });
+
+  showLoading(true);
+  try{
+    const resp = await apiPost({ action:'save', month: STATE.month, rowIndex: STATE.editingRow, record });
+    if(resp.success !== false){
+      toast('Empregador salvo com sucesso!', 'success');
+      closeModal();
+      STATE.rows = resp.data || STATE.rows;
+      renderTable();
+      renderCards();
+    } else {
+      toast(resp.error || 'Erro ao salvar.', 'error');
+    }
+  }catch(err){
+    toast('Erro de conexão ao salvar empregador.', 'error');
+  }
+  showLoading(false);
+});
+
+async function confirmDelete(rowIndex, nome){
+  if(!confirm(`Tem certeza que deseja excluir o empregador "${nome}"? Essa ação não pode ser desfeita.`)) return;
+  showLoading(true);
+  try{
+    const resp = await apiPost({ action:'delete', month: STATE.month, rowIndex });
+    if(resp.success !== false){
+      toast('Empregador excluído.', 'success');
+      STATE.rows = resp.data || [];
+      renderTable();
+      renderCards();
+    } else {
+      toast(resp.error || 'Erro ao excluir.', 'error');
+    }
+  }catch(err){
+    toast('Erro de conexão ao excluir.', 'error');
+  }
+  showLoading(false);
+}
+window.confirmDelete = confirmDelete;
+
+document.getElementById('btnDuplicar').addEventListener('click', async () => {
+  const idx = STATE.months.indexOf(STATE.month);
+  const fromMonth = STATE.months[idx+1] || STATE.months.find(m => m !== STATE.month);
+  if(!fromMonth){ toast('Não há mês anterior para duplicar.', 'error'); return; }
+  if(!confirm(`Isso vai copiar os empregadores de ${formatMonthLabel(fromMonth)} para ${formatMonthLabel(STATE.month)}. Deseja continuar?`)) return;
+  showLoading(true);
+  try{
+    const resp = await apiPost({ action:'duplicate', fromMonth, toMonth: STATE.month });
+    if(resp.success !== false){
+      toast(`${resp.added} empregador(es) duplicado(s) de ${formatMonthLabel(fromMonth)}.`, 'success');
+      STATE.rows = resp.data || [];
+      renderTable();
+      renderCards();
+    } else {
+      toast(resp.error || 'Não foi possível duplicar.', 'error');
+    }
+  }catch(err){
+    toast('Erro de conexão ao duplicar mês.', 'error');
+  }
+  showLoading(false);
+});
+
+document.getElementById('btnNovoMes').addEventListener('click', async () => {
+  const mes = prompt('Digite o novo mês no formato AAAA-MM (ex: 2026-11):');
+  if(!mes) return;
+  if(!/^\d{4}-\d{2}$/.test(mes)){ toast('Formato inválido. Use AAAA-MM.', 'error'); return; }
+  showLoading(true);
+  try{
+    const resp = await apiPost({ action:'createMonth', month: mes });
+    if(resp.success !== false){
+      STATE.months = resp.months || STATE.months;
+      populateMonths();
+      document.getElementById('monthSelect').value = mes;
+      STATE.month = mes;
+      toast('Mês criado com sucesso!', 'success');
+      await loadMonthData();
+    } else {
+      toast(resp.error || 'Erro ao criar mês.', 'error');
+    }
+  }catch(err){
+    toast('Erro de conexão ao criar mês.', 'error');
+  }
+  showLoading(false);
+});
+
+document.getElementById('monthSelect').addEventListener('change', async (e) => {
+  STATE.month = e.target.value;
+  await loadMonthData();
+});
+
+document.getElementById('searchInput').addEventListener('input', (e) => {
+  renderTable(e.target.value);
+});
 
 init();
 </script>
